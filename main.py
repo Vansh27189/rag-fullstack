@@ -1,21 +1,25 @@
-"""
-Entry point for the RAG API server
-"""
-
 import os
 from dotenv import load_dotenv
-from core.apis.api import app
 
-# Load environment variables before any other imports
+# Load env variables
 load_dotenv()
 
-import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
+from core.apis.api import app
+
+# CORS — allow requests from frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # change to frontend url later
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == "__main__":
-    # Print loaded env vars for debugging
-    print(
-        f"[Config] GEMINI_API_KEY: {'Set' if os.getenv('GEMINI_API_KEY') else 'Not Set'}"
+    import uvicorn
+    uvicorn.run(
+        "core.apis.api:app",
+        host="0.0.0.0",
+        port=int(os.getenv("PORT", 8000)),
     )
-    print(f"[Config] MONGO_DB: {os.getenv('MONGO_DB', 'Not Set')}")
-
-    uvicorn.run("core.apis.api:app", host="0.0.0.0", port=8000, reload=True)
