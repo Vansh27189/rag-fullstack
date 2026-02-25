@@ -23,6 +23,7 @@ python-docx                    # Word documents (fallback)
 
 # API Framework (for serving)
 fastapi
+python-multipart
 uvicorn
 
 # Utilities
