@@ -11,11 +11,7 @@ function App() {
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
   const [recentIngests, setRecentIngests] = useState<IngestResponse[]>([]);
 
-  useEffect(() => {
-    checkHealth();
-  }, []);
-
-  const checkHealth = async () => {
+  async function checkHealth() {
     try {
       const health = await getHealth();
       setHealthStatus(health);
@@ -31,7 +27,15 @@ function App() {
         },
       });
     }
-  };
+  }
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      void checkHealth();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
 
   const handleNewConversation = () => {
     setConversationId(null);

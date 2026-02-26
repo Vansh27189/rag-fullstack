@@ -9,7 +9,28 @@ import type {
     HealthStatus,
 } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+function resolveApiBaseUrl(): string {
+    const configuredApiUrl =
+        import.meta.env.VITE_API_URL?.trim() || import.meta.env.VITE_BACKEND_URL?.trim();
+
+    if (configuredApiUrl) {
+        return configuredApiUrl.replace(/\/$/, '');
+    }
+
+    if (typeof window !== 'undefined') {
+        const { hostname } = window.location;
+
+        // Render deployment convention: <service>-frontend.onrender.com -> <service>.onrender.com
+        if (hostname.endsWith('.onrender.com') && hostname.includes('-frontend')) {
+            return `https://${hostname.replace('-frontend', '')}`;
+        }
+    }
+
+    // Local development works with Vite proxy
+    return '/api';
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 class ApiError extends Error {
     status: number;
@@ -21,15 +42,54 @@ class ApiError extends Error {
     }
 }
 
+async function parseResponseBody(response: Response): Promise<unknown> {
+    const contentType = response.headers.get('content-type') || '';
+    const rawBody = await response.text();
+
+    if (!rawBody.trim()) {
+        return null;
+    }
+
+    if (contentType.includes('application/json')) {
+        try {
+            return JSON.parse(rawBody);
+        } catch {
+            throw new ApiError(
+                response.status,
+                'Server returned invalid JSON. Please verify backend deployment and API URL configuration.'
+            );
+        }
+    }
+
+    return rawBody;
+}
+
 async function handleResponse<T>(response: Response): Promise<T> {
+    const parsedBody = await parseResponseBody(response);
+
     if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const detail =
+            typeof parsedBody === 'object' && parsedBody !== null && 'detail' in parsedBody
+                ? String((parsedBody as { detail?: unknown }).detail)
+                : typeof parsedBody === 'string' && parsedBody.trim()
+                    ? parsedBody.slice(0, 300)
+                    : `Request failed with status ${response.status}`;
+
+        throw new ApiError(response.status, detail);
+    }
+
+    if (parsedBody === null) {
+        return {} as T;
+    }
+
+    if (typeof parsedBody === 'string') {
         throw new ApiError(
             response.status,
-            errorData.detail || `Request failed with status ${response.status}`
+            'Expected JSON response but received plain text/HTML. Check VITE_API_URL or backend routing.'
         );
     }
-    return response.json();
+
+    return parsedBody as T;
 }
 
 // Health Endpoints

@@ -6,7 +6,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
+  background: transparent;
 }
 
 /* ================================
@@ -19,8 +19,9 @@
   justify-content: space-between;
   padding: var(--space-2) var(--space-6);
   font-size: var(--text-xs);
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--glass-border);
+  background: linear-gradient(90deg, rgba(17, 31, 40, 0.92), rgba(19, 38, 48, 0.92));
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
   z-index: 50;
 }
 
@@ -49,6 +50,11 @@
 
 .status-text {
   color: var(--text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.status-bar {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
 .recent-ingests {
@@ -64,8 +70,9 @@
 .ingest-badge {
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
+  background: rgba(76, 201, 240, 0.12);
+  border: 1px solid rgba(76, 201, 240, 0.24);
+  color: #bceefb;
   max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;

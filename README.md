@@ -71,6 +71,12 @@ MONGO_DB=mongodb://localhost:27017
 DB_NAME=rag_db
 ```
 
+For the frontend (especially in deployment), set the API URL so requests go to the backend service:
+```ini
+# frontend/.env
+VITE_API_URL=https://your-backend-service-url
+```
+
 ## 🏃‍♂️ Running the Application
 
 ### Start the Backend
