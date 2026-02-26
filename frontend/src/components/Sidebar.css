@@ -15,8 +15,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-secondary);
-    border: 1px solid var(--glass-border);
+    background: rgba(17, 31, 40, 0.9);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.22);
     color: var(--text-secondary);
     transition: all var(--transition-fast);
 }
@@ -42,8 +43,8 @@
     top: 0;
     bottom: 0;
     width: 320px;
-    background: var(--bg-secondary);
-    border-right: 1px solid var(--glass-border);
+    background: linear-gradient(180deg, rgba(17, 31, 40, 0.95), rgba(14, 24, 31, 0.96));
+    border-right: 1px solid rgba(255,255,255,0.08);
     z-index: var(--z-dropdown);
     display: flex;
     flex-direction: column;
@@ -105,8 +106,8 @@
 }
 
 .tab-btn.active {
-    background: var(--gradient-primary);
-    color: var(--text-primary);
+    background: linear-gradient(135deg, rgba(46, 163, 138, 0.95), rgba(76, 201, 240, 0.92));
+    color: #041015;
 }
 
 /* Tab Content */
@@ -134,12 +135,12 @@
 
 .drop-zone:hover {
     border-color: var(--primary-500);
-    background: rgba(139, 92, 246, 0.05);
+    background: rgba(46, 163, 138, 0.08);
 }
 
 .drop-zone.has-file {
     border-color: var(--primary-500);
-    background: rgba(139, 92, 246, 0.1);
+    background: rgba(46, 163, 138, 0.16);
     padding: var(--space-4);
 }
 

@@ -9,7 +9,8 @@ import type {
     HealthStatus,
 } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
+const API_BASE_URL = (configuredApiUrl || '/api').replace(/\/$/, '');
 
 class ApiError extends Error {
     status: number;
