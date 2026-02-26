@@ -9,8 +9,28 @@ import type {
     HealthStatus,
 } from '../types';
 
-const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
-const API_BASE_URL = (configuredApiUrl || '/api').replace(/\/$/, '');
+function resolveApiBaseUrl(): string {
+    const configuredApiUrl =
+        import.meta.env.VITE_API_URL?.trim() || import.meta.env.VITE_BACKEND_URL?.trim();
+
+    if (configuredApiUrl) {
+        return configuredApiUrl.replace(/\/$/, '');
+    }
+
+    if (typeof window !== 'undefined') {
+        const { hostname } = window.location;
+
+        // Render deployment convention: <service>-frontend.onrender.com -> <service>.onrender.com
+        if (hostname.endsWith('.onrender.com') && hostname.includes('-frontend')) {
+            return `https://${hostname.replace('-frontend', '')}`;
+        }
+    }
+
+    // Local development works with Vite proxy
+    return '/api';
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 class ApiError extends Error {
     status: number;
