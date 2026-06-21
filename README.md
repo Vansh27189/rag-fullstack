@@ -31,7 +31,7 @@ A specialized Retrieval-Augmented Generation (RAG) application designed for inte
 -   Python 3.9+
 -   Node.js 16+
 -   MongoDB (Local or Atlas)
--   Google Gemini API Key
+-   Google Gemini API Key from google      studio
 
 ## ⚡ Installation & Setup
 
